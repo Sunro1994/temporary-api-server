@@ -1,2 +1,1 @@
-# temporary
-과외 프로젝트 공유용 레포지터리
+Class: 2024-01 WebApp 01반

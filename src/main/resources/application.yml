@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    hibernate:
+#      create로 설정하면 이전에 데이터가 다 날아가기때문에 실제 프로젝트 협업중에는 절!대! create쓰지 않기
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
