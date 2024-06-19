@@ -4,6 +4,7 @@ import com.example.demo.model.UserEntity;
 import com.example.demo.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,10 @@ public class UserService {
     }
 
     public UserEntity getByCredentials(String username, String password, PasswordEncoder passwordEncoder) {
-        return userRepository.findByUsernameAndPassword(username, passwordEncoder.encode(password));
+         UserEntity originalUser = userRepository.findByUsername(username);
+        if(originalUser != null && passwordEncoder.matches(password, originalUser.getPassword())) {
+            return  originalUser;
+        }
+        return null;
     }
 }
