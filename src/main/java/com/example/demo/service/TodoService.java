@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.repository.TodoRepository;
 import com.example.demo.model.TodoEntity;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 public class TodoService {
 
     @Autowired
@@ -43,7 +45,7 @@ public class TodoService {
     public List<TodoEntity> update(final TodoEntity entity) {
         validate(entity);
 
-        final Optional<TodoEntity> original = repository.findById(entity.getId());
+        Optional<TodoEntity> original = repository.findByUserIdAndTitle(entity.getUserId(), entity.getTitle());
 
         original.ifPresent( todo -> {
             System.out.println("todo.getId() = " + todo.getId());
@@ -59,16 +61,20 @@ public class TodoService {
 
     }
 
-    public List<TodoEntity> delete(TodoEntity entity) {
+    public List<TodoEntity> delete(String userId, TodoEntity entity) {
         log.info("entity ={}", entity);
 
-        TodoEntity todo = repository.findByTitle(entity.getTitle());
+        TodoEntity todo = repository.findByUserIdAndTitle(userId, entity.getTitle())
+                .orElseThrow(
+                        () -> new RuntimeException("찾을 수 없음")
+                );
+        log.info("entity ={}", todo);
+        log.info(String.valueOf(entity.getUserId().equals(todo.getUserId())));
 
 
         try {
-            repository.delete(todo);
+            repository.deleteByTitleAndUserId(todo.getTitle(),todo.getUserId());
         } catch (Exception e) {
-            log.error("error deleting entity  ", entity.getId(), e);
             throw new RuntimeException("error deleting entity " + entity.getId());
         }
 
@@ -87,9 +93,11 @@ public class TodoService {
         }
     }
 
-    public TodoEntity findTodo(String title) {
+    public TodoEntity findTodo(String userId, String title) {
 
-        TodoEntity findEntity = repository.findByTitle(title);
+        TodoEntity findEntity = repository.findByUserIdAndTitle(userId, title).orElseThrow(
+                () -> new RuntimeException("찾을 수 없음")
+        );
         return findEntity;
     }
 }

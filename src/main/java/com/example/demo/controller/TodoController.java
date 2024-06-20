@@ -6,7 +6,6 @@ import com.example.demo.model.TodoEntity;
 import com.example.demo.service.TodoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +33,10 @@ public class TodoController {
     }
 
     @PostMapping("/find")
-    public ResponseEntity<?> findTodo(@RequestBody TodoDTO dto) {
+    public ResponseEntity<?> findTodo(@AuthenticationPrincipal String userId, @RequestBody TodoDTO dto) {
         String title = dto.getTitle();
 
-        TodoEntity findEntity = service.findTodo(title);
+        TodoEntity findEntity = service.findTodo(userId, title);
 
 
         TodoDTO result = TodoDTO.builder()
@@ -49,6 +48,8 @@ public class TodoController {
 
 
         ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().entity(result).build();
+
+
 
 
         return ResponseEntity.ok().body(response);
@@ -127,7 +128,7 @@ public class TodoController {
             entity.setUserId(userId);
 
 
-            List<TodoEntity> entities = service.delete(entity);
+            List<TodoEntity> entities = service.delete(userId,entity);
 
             List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 
