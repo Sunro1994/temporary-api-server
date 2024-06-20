@@ -105,7 +105,7 @@ public class TodoController {
         entity.setUserId(userId);
 
 
-        List<TodoEntity> entities = service.update(entity);
+        List<TodoEntity> entities = service.update(entity, dto.getOriginalTitle());
 
         List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 

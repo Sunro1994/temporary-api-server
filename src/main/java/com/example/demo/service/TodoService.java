@@ -42,20 +42,19 @@ public class TodoService {
         return repository.findByUserId(userId);
     }
 
-    public List<TodoEntity> update(final TodoEntity entity) {
+    public List<TodoEntity> update(TodoEntity entity, String origianlTitle) {
         validate(entity);
 
-        Optional<TodoEntity> original = repository.findByUserIdAndTitle(entity.getUserId(), entity.getTitle());
 
-        original.ifPresent( todo -> {
-            System.out.println("todo.getId() = " + todo.getId());
-            todo.setTitle(entity.getTitle());
-            todo.setDone(entity.isDone());
-            todo.setUserId(entity.getUserId());
+        log.info("Entity userId: {}", entity.getUserId());
+        log.info("Entity title : {}", entity.getTitle());
 
+        TodoEntity original = repository.findByUserIdAndTitle(entity.getUserId(), origianlTitle).orElseThrow(
+                () -> new RuntimeException("존재하지 않는 엔티티입니다.")
+        );
 
-            repository.saveAndFlush(todo);
-        }  );
+        original.setTitle(entity.getTitle());
+        repository.save(original);
 
         return retrieve(entity.getUserId());
 

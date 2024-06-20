@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class TodoDTO {
     private String id;
     private String userid;
+    private String originalTitle;
     private String title;
     private boolean done;
 
