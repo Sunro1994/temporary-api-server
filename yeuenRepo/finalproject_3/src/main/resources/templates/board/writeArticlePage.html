@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>게시글 쓰기</h1>
+
+        <form action="./writeArticleProcess" method="post" enctype="multipart/form-data">
+            작성자: <span th:text="${session.sessionUserInfo.nickname}"></span>
+            <br>
+            제목: <input name="title" type="text"><br>
+            내용: <textarea name="content"></textarea><br>
+            업로드 이미지: <input type="file" name="uploadFiles" multiple accept="image/*"><br>  
+            <button>글 쓰기</button>        
+        </form>
+    </body> 
+</html>

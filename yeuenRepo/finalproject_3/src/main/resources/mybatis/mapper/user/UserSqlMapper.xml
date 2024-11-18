@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ja.finalproject.user.mapper.UserSqlMapper">
+
+    <insert id="createUser">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT MAX(id) FROM fp_user fu
+        </selectKey>
+        INSERT INTO fp_user(user_id, password, nickname, email, gender, birth, phone)
+        VALUES(#{user_id}, SHA2(CONCAT(#{password}, '!@FFFEEWW'), 224), #{nickname}, #{email}, #{gender}, #{birth}, #{phone})
+    </insert>
+
+    <!-- select인 경우 꼭..!! resultType 정의 -->
+    <select id="findByUserIdAndPassword" resultType="com.ja.finalproject.dto.UserDto">
+        SELECT * 
+        FROM fp_user fu 
+        INNER JOIN fp_mail_auth fma ON fma.user_id = fu.id
+        WHERE fu.user_id = #{user_id} AND fu.password = SHA2(CONCAT(#{password}, '!@FFFEEWW'), 224)
+        AND fma.complete = 'Y'
+    </select>
+
+    <select id="findById" resultType="com.ja.finalproject.dto.UserDto">
+        SELECT * FROM fp_user fu WHERE fu.id = #{id}
+    </select>
+
+    <!-- 취미 .. -->
+    <select id="findHobbyCategoryAll" resultType="com.ja.finalproject.dto.HobbyCategoryDto">
+        SELECT * FROM fp_hobby_category ORDER BY id ASC
+    </select>
+
+    <insert id="createUserHobby">
+        INSERT INTO fp_user_hobby(user_id, hobby_id)
+        VALUES(#{user_id}, #{hobby_id})
+    </insert>
+
+    <!-- 메일 인증 -->
+    <insert id="createMailAuth">
+        INSERT INTO fp_mail_auth(user_id, auth_key, complete) 
+        VALUES(#{user_id}, #{auth_key}, 'N')
+    </insert>
+
+    <update id="updateMailAuthComplete">
+        UPDATE fp_mail_auth SET complete = 'Y' 
+        WHERE auth_key = #{auth_key}
+    </update>
+
+    <select id="countUserByUserId" resultType="int">
+        SELECT COUNT(*) FROM fp_user fu WHERE fu.user_id = #{user_id}
+    </select>
+
+</mapper>

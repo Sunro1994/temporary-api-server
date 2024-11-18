@@ -1,0 +1,38 @@
+<div th:fragment="topNavi" class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                <a class="navbar-brand" href="#">대충로고</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">홈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/board/mainPage">자유게시판</a>
+                    </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li th:if="${session.sessionUserInfo != null}" class="nav-item dropdown">
+                            <a th:text="${session.sessionUserInfo.nickname}" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                            <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/user/logoutProcess">로그아웃</a></li>
+                            </ul>
+                        </li>
+                        <li th:unless="${session.sessionUserInfo != null}" class="nav-item">
+                            <a class="link-underline-light" href="/user/loginPage">로그인</a>
+                        </li>
+                    </ul>
+                </div>
+                </div>
+            </nav>                    
+        </div>
+    </div>
+</div>

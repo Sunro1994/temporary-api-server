@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ja.finalproject.board.mapper.BoardSqlMapper">
+    <insert id="createArticle">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT MAX(fa.id) FROM fp_article fa
+        </selectKey>
+        INSERT INTO fp_article(
+            user_id, 
+            title, 
+            content, 
+            read_count) 
+        VALUES(
+            #{user_id}, #{title}, #{content}, 0
+        )
+    </insert>
+
+    <select id="findAll" resultType="com.ja.finalproject.dto.ArticleDto">
+        SELECT fa.* 
+        FROM fp_article fa
+        <if test="searchType != null and searchWord != null">
+            <choose>
+                <when test="searchType == 'title'">
+                    WHERE fa.title LIKE CONCAT('%', #{searchWord}, '%')
+                </when>
+                <when test="searchType == 'content'">
+                    WHERE fa.content LIKE CONCAT('%', #{searchWord}, '%')
+                </when>
+                <when test="searchType == 'nickname'">
+                    INNER JOIN fp_user fu ON fu.id = fa.user_id
+                    WHERE fu.nickname LIKE CONCAT('%', #{searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY fa.id DESC 
+        LIMIT #{pageIndex}, 10       
+    </select>
+
+    <select id="getTotalArticleCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM fp_article fa
+        <if test="searchType != null and searchWord != null">
+            <choose>
+                <when test="searchType == 'title'">
+                    WHERE fa.title LIKE CONCAT('%', #{searchWord}, '%')
+                </when>
+                <when test="searchType == 'content'">
+                    WHERE fa.content LIKE CONCAT('%', #{searchWord}, '%')
+                </when>
+                <when test="searchType == 'nickname'">
+                    INNER JOIN fp_user fu ON fu.id = fa.user_id
+                    WHERE fu.nickname LIKE CONCAT('%', #{searchWord}, '%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+
+    <select id="findById" resultType="com.ja.finalproject.dto.ArticleDto">
+        SELECT * FROM fp_article fa WHERE fa.id = #{id}
+    </select>
+
+    <update id="increaseReadCount">
+        UPDATE fp_article SET read_count = read_count + 1 WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM fp_article WHERE id = #{id}
+    </delete>
+
+    <update id="update">
+        UPDATE fp_article 
+        SET 
+            title = #{title},
+            content = #{content}
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 이미지 -->
+    <insert id="createArticleImage">
+        INSERT INTO fp_article_image(
+            article_id, location, original_filename)
+        VALUES(
+            #{article_id},
+            #{location},
+            #{original_filename}
+        )
+    </insert>
+
+    <select id="findImageByArticleId" resultType="com.ja.finalproject.dto.ArticleImageDto">
+        SELECT * FROM fp_article_image fai
+        WHERE fai.article_id = #{article_id}
+    </select>
+
+
+    <insert id="createLike">
+        INSERT INTO fp_like(user_id, article_id) VALUES(#{user_id}, #{article_id})
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM fp_like WHERE user_id = #{user_id} AND article_id = #{article_id}
+    </delete>
+
+    <select id="getTotalLikeCount" resultType="int">
+        SELECT COUNT(*) FROM fp_like WHERE article_id = #{article_id}
+    </select>
+
+    <select id="getMyLikeCount" resultType="int">
+        SELECT COUNT(*) FROM fp_like WHERE user_id = #{user_id} AND article_id = #{article_id}
+    </select>
+
+
+    <!-- 댓글 -->
+    <insert id="createComment">
+        INSERT INTO fp_comment(article_id, user_id, content)
+        VALUES(#{article_id}, #{user_id}, #{content})
+    </insert>
+
+    <delete id="deleteCommentById">
+        DELETE FROM fp_comment WHERE id = #{id}
+    </delete>
+
+    <update id="updateComment">
+        UPDATE fp_comment SET content = #{content} WHERE id = #{id}
+    </update>
+
+    <select id="selectCommentByArticleId" resultType="com.ja.finalproject.dto.CommentDto">
+        SELECT * FROM fp_comment fc WHERE fc.article_id = #{article_id}
+        ORDER BY fc.id ASC
+    </select>
+
+
+
+
+
+
+
+</mapper>

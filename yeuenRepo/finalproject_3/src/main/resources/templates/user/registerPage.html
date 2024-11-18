@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <script>
+
+            let isIdChecked = false;
+
+            function registerUser() {
+
+                const inputId = document.getElementById("inputId");
+
+                const regex = /^[a-zA-Z][a-zA-Z0-9-_]{2,19}$/;
+                if(!regex.test(inputId.value)) {
+                    alert("아이디는 영문과 .. 3-20여야합니다...");
+                    inputId.focus();
+                    return;
+                }
+
+                const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|;:'",.<>?/`~\\]).{8,}$/;
+                const inputPassword = document.getElementById("inputPassword");
+                if(!regexPassword.test(inputPassword.value)) {
+                    alert("비밀번호는... 어쩌고 저쩌고 여야 합니다.");
+                    inputPassword.value = "";
+                    inputPassword.focus();
+                    return;
+                }
+
+                // 2개 비번 일치
+                const inputPasswordConfirm = document.getElementById("inputPasswordConfirm");
+                if(inputPasswordConfirm.value != inputPassword.value) {
+                    alert("비번 확인이 잘못 되었??");
+                    inputPasswordConfirm.value = "";
+                    inputPassword.value = "";
+                    inputPassword.focus();
+                    return;
+                }
+
+                // const checkhobbyList = document.getElementsByClassName("checkhobby");
+                // let count = 0;
+                // for(checkhobby of checkhobbyList) {
+                //     if(checkhobby.checked){
+                //         count++;
+                //     }
+                // }
+
+                // if(count < 1) {
+                //     alert("적어도 한개 이상 취미를 선택해 주셔야 합니다.");
+                //     return;
+                // }
+
+                const checkhobbyList = document.querySelectorAll(".checkhobby:checked");
+                if(checkhobbyList.length < 1) {
+                    alert("적어도 한개 이상 취미를 선택해 주셔야 합니다.")
+                    return;
+                }
+
+                const inputBirth = document.getElementById("inputBirth");
+                if(inputBirth.value == ''){
+                    alert("날짜를 선택하셔야 합니다.");
+                    return;
+                }
+                
+                if(!isIdChecked) {
+                    alert("아이디 중복 체크를 해주시길...");
+                    return;
+                }
+
+                const registerForm = document.getElementById("registerForm");
+                registerForm.submit();
+            }            
+
+            function checkUserId() {
+                
+                const inputIdValue = document.getElementById("inputId").value;
+
+                //A JAX 
+                fetch("/api/user/existsId?userId=" + inputIdValue)
+                .then(r => r.json())
+                .then(response => {
+                    // 리퀘스트 이후.. 응답 후 실행되는 코드
+                    // 로직 작성 구간... 여기서 부터 헬...
+                    if(response.data.isExist == true) {
+                        const idConfirmResult = document.getElementById("idConfirmResult");
+                        idConfirmResult.innerText = "이미 존재하는 아이디 입니다.";
+                        idConfirmResult.style.color = "red"; // css .. 클래스로 작업할 것
+                        isIdChecked = false;
+
+                    } else {
+                        const idConfirmResult = document.getElementById("idConfirmResult");
+                        idConfirmResult.innerText = "사용 가능한 아이디입니다.";
+                        idConfirmResult.style.color = "green"; // css .. 클래스로 작업할 것
+                        isIdChecked = true;
+                    }
+                })
+                ;
+
+
+
+            }
+
+
+        </script>
+    </head>
+    <body>
+        <form id="registerForm" action="./registerProcess" method="post">
+            ID: <input onblur="checkUserId()" id="inputId" name="user_id" type="text">
+            <div id="idConfirmResult"></div>
+            PW: <input id="inputPassword" name="password" type="password"><br>
+            PW 확인: <input id="inputPasswordConfirm" type="password"><br>
+            닉네임: <input name="nickname" type="text"><br>
+            이메일: <input name="email" type="text"><br>
+            성별: 
+            <input name="gender" type="radio" value="M" checked>남
+            <input name="gender" type="radio" value="F">여
+            <br>
+            취미: 
+            <th:block th:each="ttt : ${hobbyList}">
+                <input class="checkhobby" name="hobby" th:value="${ttt.id}" type="checkbox"><span th:text="${ttt.hobby_name}"></span>
+            </th:block>
+            <br>
+
+            생년월일: <input id="inputBirth" name="birth" type="date"><br>
+            전화번호: <input name="phone" type="text"><br>
+            <input onclick="registerUser()" type="button" value="회원가입">
+        </form>
+
+    </body>
+</html>
