@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ja.finalproject.board.mapper.BoardSqlMapper">
+<mapper namespace="com.ja.finalproject.domain.board.mapper.BoardSqlMapper">
     <insert id="createArticle">
         <selectKey resultType="int" keyProperty="id" order="AFTER">
             SELECT MAX(fa.id) FROM fp_article fa
@@ -16,7 +16,7 @@
         )
     </insert>
 
-    <select id="findAll" resultType="com.ja.finalproject.dto.ArticleDto">
+    <select id="findAll" resultType="com.ja.finalproject.domain.board.dto.ArticleDto">
         SELECT fa.* 
         FROM fp_article fa
         <if test="searchType != null and searchWord != null">
@@ -57,7 +57,7 @@
     </select>
 
 
-    <select id="findById" resultType="com.ja.finalproject.dto.ArticleDto">
+    <select id="findById" resultType="com.ja.finalproject.domain.board.dto.ArticleDto">
         SELECT * FROM fp_article fa WHERE fa.id = #{id}
     </select>
 
@@ -89,7 +89,7 @@
         )
     </insert>
 
-    <select id="findImageByArticleId" resultType="com.ja.finalproject.dto.ArticleImageDto">
+    <select id="findImageByArticleId" resultType="com.ja.finalproject.domain.board.dto.ArticleImageDto">
         SELECT * FROM fp_article_image fai
         WHERE fai.article_id = #{article_id}
     </select>
@@ -126,7 +126,7 @@
         UPDATE fp_comment SET content = #{content} WHERE id = #{id}
     </update>
 
-    <select id="selectCommentByArticleId" resultType="com.ja.finalproject.dto.CommentDto">
+    <select id="selectCommentByArticleId" resultType="com.ja.finalproject.domain.board.dto.CommentDto">
         SELECT * FROM fp_comment fc WHERE fc.article_id = #{article_id}
         ORDER BY fc.id ASC
     </select>

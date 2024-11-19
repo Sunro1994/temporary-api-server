@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ja.finalproject.user.mapper.UserSqlMapper">
+<mapper namespace="com.ja.finalproject.domain.user.mapper.UserSqlMapper">
 
     <insert id="createUser">
         <selectKey resultType="int" keyProperty="id" order="AFTER">
@@ -12,7 +12,7 @@
     </insert>
 
     <!-- select인 경우 꼭..!! resultType 정의 -->
-    <select id="findByUserIdAndPassword" resultType="com.ja.finalproject.dto.UserDto">
+    <select id="findByUserIdAndPassword" resultType="com.ja.finalproject.domain.user.dto.UserDto">
         SELECT * 
         FROM fp_user fu 
         INNER JOIN fp_mail_auth fma ON fma.user_id = fu.id
@@ -20,12 +20,12 @@
         AND fma.complete = 'Y'
     </select>
 
-    <select id="findById" resultType="com.ja.finalproject.dto.UserDto">
+    <select id="findById" resultType="com.ja.finalproject.domain.user.dto.UserDto">
         SELECT * FROM fp_user fu WHERE fu.id = #{id}
     </select>
 
     <!-- 취미 .. -->
-    <select id="findHobbyCategoryAll" resultType="com.ja.finalproject.dto.HobbyCategoryDto">
+    <select id="findHobbyCategoryAll" resultType="com.ja.finalproject.domain.user.dto.HobbyCategoryDto">
         SELECT * FROM fp_hobby_category ORDER BY id ASC
     </select>
 
