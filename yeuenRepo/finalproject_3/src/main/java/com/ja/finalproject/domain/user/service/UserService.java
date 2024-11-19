@@ -3,7 +3,10 @@ package com.ja.finalproject.domain.user.service;
 import java.util.List;
 import java.util.UUID;
 
+import com.ja.finalproject.domain.user.repository.UserRepository;
 import com.ja.finalproject.global.mailsender.MailSendService;
+import com.ja.finalproject.global.response.dto.RestResponseDto;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ public class UserService {
 
     private final UserSqlMapper userSqlMapper;
     private final MailSendService mailSendService;
+    private final UserRepository userRepository;
 
     public void register(UserDto userDto, List<Integer> hobbyIdList) {
         createUser(userDto, hobbyIdList);
@@ -48,4 +52,27 @@ public class UserService {
     }
 
 
+    public RestResponseDto getSessionId(HttpSession session) {
+
+        RestResponseDto responseDto = new RestResponseDto();
+        responseDto.setResult("success");
+
+        UserDto userDto = (UserDto)session.getAttribute("sessionUserInfo");
+
+        if(userDto == null){
+            responseDto.setResult("fail");
+            responseDto.setReason("인증 되지 않았습니다.");
+        } else {
+            responseDto.add("id", userDto.getId());
+        }
+        return responseDto;
+    }
+
+    public RestResponseDto existsId(String userId) {
+        RestResponseDto responseDto = new RestResponseDto();
+        responseDto.setResult("success");
+
+        responseDto.add("isExist", userRepository.existsUserByUserId(userId));
+        return responseDto;
+    }
 }

@@ -38,23 +38,23 @@ public class UserController {
         return "user/registerPage";
     }
 
-    @RequestMapping("registerProcess")
+    @PostMapping("registerProcess")
     public String registerProcess(@ModelAttribute UserDto params, @RequestParam(value = "hobby") List<Integer> hobbyList) {
 
-        // System.out.println(params);
         log.info("hobby = {}", hobbyList);
         userService.register(params, hobbyList);
 
         return "user/registerComplete";
     }
 
-    @RequestMapping("loginProcess")
+    @PostMapping("loginProcess")
     public String loginProcess(HttpSession session, @ModelAttribute UserDto params) {
 
         UserDto sessionUserInfo = userRepository.getUserByUserIdAndPassword(params);
 
         // 로그인 실패
         if(sessionUserInfo == null) {
+            log.info("session이 없어서 로그인 실패");
             return "user/loginFail";
         }
 
@@ -64,13 +64,13 @@ public class UserController {
         return "redirect:/board/mainPage";
     }
 
-    @RequestMapping("logoutProcess")
+    @GetMapping("logoutProcess")
     public String logoutProcess(HttpSession session){
         session.invalidate();
         return "redirect:/board/mainPage";
     }
 
-    @RequestMapping("mailAuthProcess")
+    @GetMapping("mailAuthProcess")
     public String mailAuthProcess(@RequestParam String key){
 
         userRepository.authenticateMail(key);
@@ -79,7 +79,7 @@ public class UserController {
     }
 
 
-    @RequestMapping("sessionNullPage")
+    @GetMapping("sessionNullPage")
     public String sessionNullPage() {
         return "user/sessionNullPage";
     }

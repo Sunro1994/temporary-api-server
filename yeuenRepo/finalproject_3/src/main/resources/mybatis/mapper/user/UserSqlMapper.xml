@@ -26,7 +26,7 @@
 
     <!-- 취미 .. -->
     <select id="findHobbyCategoryAll" resultType="com.ja.finalproject.domain.user.dto.HobbyCategoryDto">
-        SELECT * FROM fp_hobby_category ORDER BY id ASC
+        SELECT * FROM fp_hobby_category ORDER BY id
     </select>
 
     <insert id="createUserHobby">
