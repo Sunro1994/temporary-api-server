@@ -8,6 +8,7 @@ import com.ja.finalproject.global.mailsender.MailSendService;
 import com.ja.finalproject.global.response.dto.RestResponseDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.ja.finalproject.domain.user.dto.HobbyCategoryDto;
@@ -18,11 +19,16 @@ import com.ja.finalproject.domain.user.mapper.UserSqlMapper;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserSqlMapper userSqlMapper;
     private final MailSendService mailSendService;
     private final UserRepository userRepository;
+
+    public void test(String str){
+        log.info("hello");
+    }
 
     public void register(UserDto userDto, List<Integer> hobbyIdList) {
         createUser(userDto, hobbyIdList);
