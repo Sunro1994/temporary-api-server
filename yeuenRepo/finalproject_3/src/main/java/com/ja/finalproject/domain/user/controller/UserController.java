@@ -2,6 +2,7 @@ package com.ja.finalproject.domain.user.controller;
 
 import java.util.List;
 
+import com.ja.finalproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @RequestMapping(value = "loginPage",method = RequestMethod.GET)
     public String loginPage() {
@@ -31,7 +33,7 @@ public class UserController {
     @GetMapping("registerPage")
     public String registerPage(Model model) {
 
-        model.addAttribute("hobbyList", userService.getHobbyList());
+        model.addAttribute("hobbyList", userRepository.getHobbyList());
 
         return "user/registerPage";
     }
@@ -49,7 +51,7 @@ public class UserController {
     @RequestMapping("loginProcess")
     public String loginProcess(HttpSession session, @ModelAttribute UserDto params) {
 
-        UserDto sessionUserInfo = userService.getUserByUserIdAndPassword(params);
+        UserDto sessionUserInfo = userRepository.getUserByUserIdAndPassword(params);
 
         // 로그인 실패
         if(sessionUserInfo == null) {
@@ -71,7 +73,7 @@ public class UserController {
     @RequestMapping("mailAuthProcess")
     public String mailAuthProcess(@RequestParam String key){
 
-        userService.authenticateMail(key);
+        userRepository.authenticateMail(key);
         
         return "user/mailAuthComplete";
     }

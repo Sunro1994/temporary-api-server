@@ -1,5 +1,6 @@
 package com.ja.finalproject.domain.user.controller;
 
+import com.ja.finalproject.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,8 @@ public class RestUserController {
 
     @Autowired
     private UserService useService;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @RequestMapping("getSessionId")
@@ -42,7 +45,7 @@ public class RestUserController {
         RestResponseDto responseDto = new RestResponseDto();
         responseDto.setResult("success");
 
-        responseDto.add("isExist", useService.existsUserByUserId(userId));
+        responseDto.add("isExist", userRepository.existsUserByUserId(userId));
 
         return responseDto;
     }
