@@ -23,6 +23,8 @@ public class BoardService {
     @Autowired
     private UserSqlMapper userSqlMapper;
 
+    /// 안녕하세요
+
     public void registerArticle(ArticleDto articleDto, List<ArticleImageDto> articleImageDtoList) {
         boardSqlMapper.createArticle(articleDto);
 
